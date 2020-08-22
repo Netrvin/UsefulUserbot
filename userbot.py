@@ -4,7 +4,6 @@
 from telethon import TelegramClient, events
 from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.tl.types import InputStickerSetID
-import socks
 
 # Use your own values from my.telegram.org
 api_id = YOUR_ID
