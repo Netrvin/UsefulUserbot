@@ -1,7 +1,7 @@
 # UsefulUserbot
 A simple telegram userbot which can help you
 
-### 所有指令以 `!` 开头
+### 所有指令以 `=` 开头
 | 指令 | 描述 |
 | :-- | :-- |
 | ping | 字面意思，测延时 |
