@@ -64,23 +64,6 @@ async def my_event_handler(event):
         else:
             info = await client.get_entity(event.from_id)
         await event.reply('**ID:** ```'+str(info.id)+'``` \n**DC:** ```'+str(info.photo.dc_id)+'```')
-    elif command[0] == 'mo':
-        stickers = await client(GetStickerSetRequest(
-            stickerset=InputStickerSetID(
-                id=1360886329340068023, access_hash=9182915015938691431
-            )
-        ))
-        times = 1
-        if (len(command) == 2) and (command[1].isdigit()):
-            times = int(command[1])
-        if times > 1000:
-            await event.reply('**The quantity is too large! Automatically aborted!**')
-            return
-        for i in range(times):
-            if event.reply_to_msg_id:
-                await client.send_file(event.to_id, stickers.documents[12], reply_to=event.reply_to_msg_id)
-            else:
-                await client.send_file(event.to_id, stickers.documents[12])
     elif command[0] == 'stop':
         await event.reply('Stopping userbot...')
         await client.disconnect()
