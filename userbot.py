@@ -5,18 +5,40 @@ from telethon import TelegramClient, events
 from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.tl.types import InputStickerSetID
 import time
+import urllib.request
+import os
+import sys
+import hashlib
+import threading
+from configparser import ConfigParser
 
-# Use your own values from my.telegram.org
-api_id = YOUR_ID
-api_hash = 'YOUR_HASH'
+script_path = os.path.realpath(sys.argv[0])
+(scriptdir, scriptname) = os.path.split(script_path)
+os.chdir(scriptdir)
+config = ConfigParser()
+config.read('userbot.conf', encoding='UTF-8')
+
+try:
+    api_id = config['Settings']['APIID']
+    api_hash = config['Settings']['APIHASH']
+except:
+    print('Wrong configuration')
+    sys.exit(0)
+
+
+def restart():
+    time.sleep(3)
+    os.execl(sys.executable, 'python', script_path)
+
 
 client = TelegramClient('anon', api_id, api_hash)
 print('Starting userbot...')
 client.start()
 
+
 @client.on(events.NewMessage(from_users='me'))
 async def my_event_handler(event):
-    if event.raw_text[0] != '!':
+    if event.raw_text[0] != '=':
         return
     command = event.raw_text[1:].split()
     if command[0] == 'ping':
@@ -28,9 +50,9 @@ async def my_event_handler(event):
         msg_list = []
         if (len(command) == 2) and (command[1] == 'silent'):
             await event.delete()
-        async for message in client.iter_messages(event.to_id,from_user='me',reverse=True):
+        async for message in client.iter_messages(event.to_id, from_user='me', reverse=True):
             msg_list.append(message.id)
-        await client.delete_messages(event.to_id,message_ids=msg_list,revoke=True)
+        await client.delete_messages(event.to_id, message_ids=msg_list, revoke=True)
         if not ((len(command) == 2) and (command[1] == 'silent')):
             await event.reply('**'+str(len(msg_list))+'** messages have been deleted!')
     elif command[0] == 'chatid':
@@ -59,7 +81,13 @@ async def my_event_handler(event):
                 await client.send_file(event.to_id, stickers.documents[12], reply_to=event.reply_to_msg_id)
             else:
                 await client.send_file(event.to_id, stickers.documents[12])
-
+    elif command[0] == 'stop':
+        await event.reply('Stopping userbot...')
+        await client.disconnect()
+    elif command[0] == 'restart':
+        await event.reply('Restarting userbot...')
+        threading.Thread(target=restart).start()
+        await client.disconnect()
 
 client.run_until_disconnected()
 print('Stopping userbot...')
