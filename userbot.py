@@ -4,6 +4,8 @@
 from telethon import TelegramClient, events
 from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.tl.types import InputStickerSetID
+from telethon.tl.types import InputMediaDice
+import time
 
 # Use your own values from my.telegram.org
 api_id = YOUR_ID
@@ -15,11 +17,14 @@ client.start()
 
 @client.on(events.NewMessage(from_users='me'))
 async def my_event_handler(event):
-    if event.raw_text[0] != '/':
+    if event.raw_text[0] != '!':
         return
     command = event.raw_text[1:].split()
     if command[0] == 'ping':
-        await event.reply('**Pong!**')
+        time1 = time.time() * 1000
+        msg = await event.reply('**Pong!**')
+        time2 = time.time() * 1000
+        await msg.edit('**Pong!\nDelay: '+str(float('%.2f' % (time2 - time1)))+"ms**")
     elif command[0] == 'deleteallfromme':
         msg_list = []
         if (len(command) == 2) and (command[1] == 'silent'):
@@ -47,11 +52,15 @@ async def my_event_handler(event):
         times = 1
         if (len(command) == 2) and (command[1].isdigit()):
             times = int(command[1])
+        if times > 1000:
+            await event.reply('**The quantity is too large! Automatically aborted!**')
+            return
         for i in range(times):
             if event.reply_to_msg_id:
                 await client.send_file(event.to_id, stickers.documents[12], reply_to=event.reply_to_msg_id)
             else:
                 await client.send_file(event.to_id, stickers.documents[12])
+
 
 client.run_until_disconnected()
 print('Stopping userbot...')
