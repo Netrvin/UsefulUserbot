@@ -9,4 +9,3 @@ A simple telegram userbot which can help you
 | deleteallfromme silent | 同上（安静模式） |
 | chatid | 获取当前聊天的ID |
 | info | 获取ID和DC |
-| mo <数量（默认1）> | 发送膜拜大佬的贴纸 |
