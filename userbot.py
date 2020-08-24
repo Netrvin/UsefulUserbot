@@ -4,7 +4,6 @@
 from telethon import TelegramClient, events
 from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.tl.types import InputStickerSetID
-from telethon.tl.types import InputMediaDice
 import time
 
 # Use your own values from my.telegram.org
